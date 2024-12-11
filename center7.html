@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Open Link in Browser</title>
+    <title>Open Discord in Browser</title>
 </head>
 <body>
-    <h1>Open in Browser</h1>
-    <a id="openLink" href="intent://https://discord.gg/syntaxtiktok#Intent;scheme=https;end">Open Discord</a>
+    <h1>Open Discord</h1>
+    <a id="openLink" href="tiktok://https://discord.gg/syntaxtiktok#Intent;package=com.tiktok.android;scheme=https;end">Open Discord</a>
 
     <script>
         document.getElementById('openLink').addEventListener('click', function(e) {
             e.preventDefault();
-            const intentUrl = this.href;
-            const browserFallbackUrl = intentUrl.replace('#Intent;scheme=https;end', '');
+            const tiktokIntentUrl = this.href;
+            const browserFallbackUrl = 'https://discord.gg/syntaxtiktok';
 
-            // Try to open with intent, fallback to browser
-            window.location.href = intentUrl;
+            // Try to open with TikTok intent, fallback to browser
+            window.location.href = tiktokIntentUrl;
         });
     </script>
 </body>
