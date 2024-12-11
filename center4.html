@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Link in Browser</title>
+    <script>
+        function openBrowser() {
+            const url = "https://discord.gg/syntaxtiktok";
+
+            // Trigger browser intent for Android
+            const intentUrl = `intent://${url.replace(/^https?:\/\//, '')}#Intent;scheme=https;package=com.android.chrome;end`;
+            const newWindow = window.open(intentUrl, '_blank');
+
+            // Fallback to forcing the link open
+            if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+                // Attempt to directly open the URL in the default browser
+                window.location.href = url;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Force Open Link in Browser</h1>
+    <button onclick="openBrowser()">Open Link</button>
+</body>
+</html>
