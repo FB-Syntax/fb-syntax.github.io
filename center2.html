@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Force Open in System Browser</title>
+</head>
+<body>
+    <h1>Force Browser to Open Link</h1>
+    <p>Click the button below to open the link in the system browser:</p>
+    <button onclick="openInBrowser()">Open Example</button>
+
+    <script>
+        function openInBrowser() {
+            // Attempt to force open via a custom redirect
+            const url = "https://discord.gg/syntaxtiktok";
+
+            // Use a custom deep link (Android specific for intents)
+            const intentUrl = `intent://${url.replace(/^https?:\/\//, '')}#Intent;scheme=https;end`;
+
+            // Fallback to directly navigating
+            try {
+                window.open(intentUrl, '_system');
+            } catch (e) {
+                // Final fallback if intent fails
+                window.location.href = url;
+            }
+        }
+    </script>
+</body>
+</html>
