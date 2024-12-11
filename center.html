@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Syntax Discord</title>
+</head>
+<body>
+    <h1>Force Discord</h1>
+    <p>Click the link below:</p>
+    <a href="https://discord.gg/syntaxtiktok" target="_blank" rel="noopener noreferrer" onclick="forceBrowserOpen(event)">Open Example</a>
+
+    <script>
+        function forceBrowserOpen(event) {
+            event.preventDefault(); // Prevent the default link behavior
+            const url = event.currentTarget.href;
+
+            // Try to force open in a browser by creating a new window
+            const newWindow = window.open(url, '_blank');
+            if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+                alert('Unable to open link in the browser. Please check your settings.');
+            }
+        }
+    </script>
+</body>
+</html>
