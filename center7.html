@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Link in Browser</title>
+</head>
+<body>
+    <h1>Open in Browser</h1>
+    <a id="openLink" href="intent://https://discord.gg/syntaxtiktok#Intent;scheme=https;end">Open Discord</a>
+
+    <script>
+        document.getElementById('openLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            const intentUrl = this.href;
+            const browserFallbackUrl = intentUrl.replace('#Intent;scheme=https;end', '');
+
+            // Try to open with intent, fallback to browser
+            window.location.href = intentUrl;
+        });
+    </script>
+</body>
+</html>
