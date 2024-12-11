@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Discord in Browser</title>
+</head>
+<body>
+    <h1>Open Discord</h1>
+    <a id="openLink" href="https://discord.gg/syntaxtiktok">Open Discord</a>
+
+    <script>
+        document.getElementById('openLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            const fallbackUrl = this.href;
+
+            // Check if TikTok or other apps are handling the link
+            const ua = navigator.userAgent.toLowerCase();
+            if (ua.includes("tiktok")) {
+                // If TikTok, open directly
+                window.location.href = fallbackUrl;
+            } else {
+                // Otherwise, fallback to browser
+                window.location.href = fallbackUrl;
+            }
+        });
+    </script>
+</body>
+</html>
