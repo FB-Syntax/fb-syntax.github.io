@@ -12,6 +12,8 @@
     input, select { padding: 5px; margin: 2px; }
     .paid-tag { background: #d4edda; color: green; padding: 2px 6px; border-radius: 4px; }
     .unpaid-tag { background: #f8d7da; color: red; padding: 2px 6px; border-radius: 4px; }
+    .expired { color: red; font-weight: bold; }
+    .countdown { color: blue; }
   </style>
 </head>
 <body>
@@ -40,6 +42,7 @@
         <th>Contact</th>
         <th>Renew</th>
         <th>Expires</th>
+        <th>Remaining</th>
         <th>Referral</th>
         <th>Payment</th>
         <th>Referral Comm.</th>
@@ -61,6 +64,16 @@
       renderTable();
     }
 
+    function calculateRemaining(expires) {
+      if (!expires) return '';
+      const today = new Date();
+      const exp = new Date(expires);
+      const diffTime = exp - today;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      if (diffDays < 0) return '<span class="expired">Expired</span>';
+      return `<span class="countdown">${diffDays} day(s)</span>`;
+    }
+
     function renderTable() {
       const tbody = document.getElementById('entryTable');
       tbody.innerHTML = '';
@@ -71,6 +84,7 @@
           <td>${entry.contact}</td>
           <td>${entry.renew || ''}</td>
           <td>${entry.expires || ''}</td>
+          <td>${calculateRemaining(entry.expires)}</td>
           <td>${entry.referral}</td>
           <td>$${entry.payment || 0}</td>
           <td>$${entry.referralCommission || 0}</td>
@@ -99,6 +113,12 @@
       const paid = confirm("Is commission paid?");
       if (!data[index].history) data[index].history = [];
       data[index].history.push({ month, paid });
+
+      // Optional: Extend expiration 1 month from current expiration
+      const expires = new Date(data[index].expires || new Date());
+      expires.setMonth(expires.getMonth() + 1);
+      data[index].expires = expires.toISOString().split('T')[0];
+
       saveData();
     }
 
