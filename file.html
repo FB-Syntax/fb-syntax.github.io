@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Subscription & Commission Tracker</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f4f4f4; }
+    button { padding: 5px 10px; margin: 2px; }
+    input, select { padding: 5px; margin: 2px; }
+    .paid-tag { background: #d4edda; color: green; padding: 2px 6px; border-radius: 4px; }
+    .unpaid-tag { background: #f8d7da; color: red; padding: 2px 6px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Subscription & Commission Tracker</h1>
+
+  <h3>Add / Edit Entry</h3>
+  <form id="entryForm">
+    <input type="hidden" id="editIndex">
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="text" id="contact" placeholder="Contact">
+    <input type="date" id="renew">
+    <input type="date" id="expires">
+    <input type="text" id="referral" placeholder="Referral">
+    <input type="number" id="payment" placeholder="Payment" step="0.01">
+    <input type="number" id="referralCommission" placeholder="Referral Comm." step="0.01">
+    <input type="number" id="bossCommission" placeholder="Boss Comm." step="0.01">
+    <input type="number" id="myCommission" placeholder="My Comm." step="0.01">
+    <button type="submit">Save</button>
+  </form>
+
+  <h3>All Entries</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Contact</th>
+        <th>Renew</th>
+        <th>Expires</th>
+        <th>Referral</th>
+        <th>Payment</th>
+        <th>Referral Comm.</th>
+        <th>Boss Comm.</th>
+        <th>My Comm.</th>
+        <th>Total</th>
+        <th>History</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="entryTable"></tbody>
+  </table>
+
+  <script>
+    let data = JSON.parse(localStorage.getItem('subs') || '[]');
+
+    function saveData() {
+      localStorage.setItem('subs', JSON.stringify(data));
+      renderTable();
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('entryTable');
+      tbody.innerHTML = '';
+      data.forEach((entry, i) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${entry.email}</td>
+          <td>${entry.contact}</td>
+          <td>${entry.renew || ''}</td>
+          <td>${entry.expires || ''}</td>
+          <td>${entry.referral}</td>
+          <td>$${entry.payment || 0}</td>
+          <td>$${entry.referralCommission || 0}</td>
+          <td>$${entry.bossCommission || 0}</td>
+          <td>$${entry.myCommission || 0}</td>
+          <td>$${(Number(entry.payment || 0)).toFixed(2)}</td>
+          <td>
+            ${(entry.history || []).map(h => {
+              const tag = h.paid ? '<span class="paid-tag">Paid</span>' : '<span class="unpaid-tag">Unpaid</span>';
+              return `<div>${h.month}: ${tag}</div>`;
+            }).join('')}
+            <button onclick="addHistory(${i})">Add Month</button>
+          </td>
+          <td>
+            <button onclick="editEntry(${i})">Edit</button>
+            <button onclick="deleteEntry(${i})">Delete</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function addHistory(index) {
+      const month = prompt("Enter month (e.g. 2025-05):");
+      if (!month) return;
+      const paid = confirm("Is commission paid?");
+      if (!data[index].history) data[index].history = [];
+      data[index].history.push({ month, paid });
+      saveData();
+    }
+
+    function editEntry(index) {
+      const e = data[index];
+      document.getElementById('editIndex').value = index;
+      document.getElementById('email').value = e.email;
+      document.getElementById('contact').value = e.contact;
+      document.getElementById('renew').value = e.renew || '';
+      document.getElementById('expires').value = e.expires || '';
+      document.getElementById('referral').value = e.referral;
+      document.getElementById('payment').value = e.payment;
+      document.getElementById('referralCommission').value = e.referralCommission;
+      document.getElementById('bossCommission').value = e.bossCommission;
+      document.getElementById('myCommission').value = e.myCommission;
+    }
+
+    function deleteEntry(index) {
+      if (confirm("Are you sure?")) {
+        data.splice(index, 1);
+        saveData();
+      }
+    }
+
+    document.getElementById('entryForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const entry = {
+        email: document.getElementById('email').value,
+        contact: document.getElementById('contact').value,
+        renew: document.getElementById('renew').value,
+        expires: document.getElementById('expires').value,
+        referral: document.getElementById('referral').value,
+        payment: document.getElementById('payment').value,
+        referralCommission: document.getElementById('referralCommission').value,
+        bossCommission: document.getElementById('bossCommission').value,
+        myCommission: document.getElementById('myCommission').value
+      };
+      const index = document.getElementById('editIndex').value;
+      if (index) {
+        data[index] = { ...data[index], ...entry };
+      } else {
+        data.push(entry);
+      }
+      document.getElementById('entryForm').reset();
+      document.getElementById('editIndex').value = '';
+      saveData();
+    });
+
+    renderTable();
+  </script>
+</body>
+</html>
